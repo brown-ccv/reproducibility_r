@@ -66,8 +66,7 @@ date: "2023-09-05"
 
 ```
 
-# Try putting that function in a separate .R file and importing that function into the R notebook
-
+# Try putting function in a separate .R file and importing that function into the R notebook
 ```{r}
 
 ```
@@ -77,3 +76,24 @@ date: "2023-09-05"
 ```{r}
 
 ```
+
+# Talk about importing data from PDF files w pdftools
+```{r}
+
+```
+
+# Talk about reading and exporting excel files -- is there a way to do conditional formatting? ppl love it for reasons
+```{r}
+
+```
+
+# Maybe talk about knitting nice tables too?
+```{r}
+
+```
+
+# Interactive stuff with ggplotly, caution about some of the default settings in ggplotly being a little different
+```{r}
+
+```
+
