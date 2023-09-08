@@ -1,0 +1,61 @@
+---
+title: "part_1"
+format: html
+editor: visual
+---
+
+## Running Code
+
+When analyzing your data in a program like Excel, you might want to filter data to look at a particular category of interest. We can do this in R as well. Let's look at the Canada data:
+
+```{r}
+c <- dplyr::filter(gm_lex_raw, name == 'Canada')
+```
+
+R will let you name your variable `c`, but it might not be the best choice since it isn't particularly informative. There are some variable names that R disallows:
+
+```{r}
+?Reserved
+```
+
+Let's try `can_data` instead.
+
+```{r}
+can_data <- dplyr::filter(gm_lex_raw, name == 'Canada')
+```
+
+Let's make a quick plot of the Canada data:
+
+![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAaCAYAAADFTB7LAAAAcElEQVR4Xu3OwQmAQAxE0bClWYCW5N06tM6V2YPg5CjoF/JhLoHAi6iqn9eOefUbqrYvHY0cQDLyAlKRNyARmYA0ZMLRkAlGQyaU72tkAtlim7r/vJqDUDjlKBROOQyFU2icQuMUGqfQuBEaV1XPOwEx96nYACK8+wAAAABJRU5ErkJggg== "Run Current Chunk")
+
+```{r}
+can_plot <- ggplot(data = can_data, aes(x = time, y = Life.expectancy)) +
+   geom_line()
+can_plot
+```
+
+Let's look at a table of the can_data between 1900 and 1950 to see more information about the dip we see:
+
+```{r}
+dplyr::filter(can_data, time >= 1915 & time < 1925)
+```
+
+in base R we could do something like this, where we select rows in `can_data` where the `time` column is between 1915 and 1925.
+
+```{r}
+can_data[can_data$time %in% 1915:1925,]
+```
+
+We an use plotly to make an interactive plot to see which year has the dip:
+
+```{r}
+ggplotly(can_plot)
+```
+
+Look like people born in 1918 have a lower life expectancy, this study indicates this is due to the 1918 flu epidemic: doi: 10.1111/j.1728-4457.2000.00565.x
+
+::: {.callout-note}
+
+Look like people born in 1918 have a lower life expectancy, this study indicates this is due to the 1918 flu epidemic: doi: 10.1111/j.1728-4457.2000.00565.x. We can also see that the `time` axis goes to year 2100. This is because after 2020, the data contains life expectancy *predictions* rather than using real data. Take a few minutes to create a new figure that omits the year 2020 and after.
+
+:::
