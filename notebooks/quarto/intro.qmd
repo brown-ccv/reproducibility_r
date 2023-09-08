@@ -1,0 +1,36 @@
+---
+title: "Intro"
+format: revealjs
+editor: visual
+---
+
+## Gapminder Data
+
+We are going to use some of the data on https://www.gapminder.org for this workshop.
+
+Their statement says: **`Our mission is to fight devastating ignorance with a fact-based worldview everyone can understand.`**
+
+## Import
+
+We have already imposed some structure on the contents of this repository. The `data` folder has three sub-folders -- `raw`, `intermediate`, and `processed`. We can try to import the `raw` data as follows:
+
+```{r}
+#| echo: true
+#| code-overflow: wrap
+#| tidy.opts: { width.cutoff: 60 }
+gm_lex_raw <- read.csv(
+  '/Users/jwalla12/repos/reproducibility_r/data/raw/GM_lex_by_country.csv')
+```
+
+``` r
+```
+
+This won't work for you because I have hard-coded the file paths. We can fix this using relative paths. Since we are all using the same container and bound directories, all of our file paths will be the same. How can we fix this issue? Use relative paths
+
+```{r}
+#| echo: true
+#| code-overflow: wrap
+#| tidy.opts: { width.cutoff: 60 }
+gm_lex_raw <- read.csv(
+  '~/repos/reproducibility_r/data/raw/GM_lex_by_country.csv')
+```
