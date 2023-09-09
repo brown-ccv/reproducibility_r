@@ -1,0 +1,41 @@
+---
+title: "Reproducibility in R"
+format: html
+editor: visual
+---
+
+## Control Flow
+
+Sometimes we may want to make some decisions about our analysis based on the data -- `if...else` statements are one way to achieve this. The general format of an `if..else` statement is:
+
+`returned_vector <- ifelse(test_expression, x, y)`
+
+We can try an example -- first generate a list of numbers, 0-10 and then write an `ifelse` statement that will divide each number by two and if there's no remainder, then print `even`, otherwise print `odd`.
+
+```{r}
+numbers <- 0:10
+ifelse(numbers %% 2 == 0,"even","odd")
+```
+
+We could also have it return the contents of `number` if there's a remainder:
+
+```{r}
+ifelse(numbers %% 2 == 0,"even",numbers)
+```
+
+::: callout-note
+Now that you know how to use `ifelse()`, **add a new column `gm_lex_raw` to indicate whether or not the data for a given row is a prediction or real data** (remember that starting with the year 2017, the data includes life expectancy estimates rather than actual data). **As a stretch goal, you can also create a new line plot showing the life expectancy for Spain, where the line is colored based on whether or not the data contains estimates or not.**
+:::
+
+```{r}
+gm_lex_raw$data_source <- ifelse(gm_lex_raw$time >= 2016, 'estimate', 'not_estimate')
+```
+
+```{r}
+ggplot(
+  data = gm_lex_raw %>% dplyr::filter(name == 'Spain'),
+  aes(x = time, y = Life.expectancy, color = data_source)
+) +
+  geom_line() +
+  ggtitle('Spain')
+```

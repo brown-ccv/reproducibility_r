@@ -1,0 +1,75 @@
+---
+title: "Reproducibility in R"
+format: html
+editor: visual
+---
+
+## Filtering and plotting data
+
+When analyzing your data in a program like Excel, you might want to filter data to look at a particular category of interest. We can do this in R as well. Let's look at the Canada data:
+
+```{r}
+c <- dplyr::filter(gm_lex_raw, name == 'Canada')
+```
+
+Although it isn't an informative variable name and probably not the best choice, R will still let you name your variable `c`. There are some variable names that R disallows:
+
+```{r}
+print(?Reserved)
+
+# Reserved {base}	R Documentation
+# Reserved Words in R
+# Description
+# The reserved words in R's parser are
+# 
+# if else repeat while function for in next break
+# 
+# TRUE FALSE NULL Inf NaN NA NA_integer_ NA_real_ NA_complex_ NA_character_
+# 
+# ... and ..1, ..2 etc, which are used to refer to arguments passed down from a calling function, see ....
+# 
+# Details
+# Reserved words outside quotes are always parsed to be references to the objects linked to in the ‘Description’, and hence they are not allowed as syntactic names (see make.names). They are allowed as non-syntactic names, e.g. inside backtick quotes.
+
+```
+
+Let's make a quick plot of the Canada data, using the `ggtitle` argument to add a title indicating that it is data from Canada.
+
+```{r}
+can_plot <- ggplot(data = c, aes(x = time, y = Life.expectancy)) +
+   geom_line() + 
+  ggtitle('Canada')
+can_plot
+```
+
+Let's look at a table of the Canada data between 1900 and 1950 to see more information about the dip we see:
+
+```{r}
+dplyr::filter(c, time >= 1915 & time < 1925)
+```
+
+in base R we could do something like this, where we select rows in `can_data` where the `time` column is between 1915 and 1925.
+
+```{r}
+c[c$time %in% 1915:1925,]
+```
+
+We could also use the `ggplotly` function in the `plotly` package to make an interactive plot to see which year has the dip:
+
+```{r}
+ggplotly(can_plot)
+```
+
+Look like people born in 1918 have a lower life expectancy, this study indicates this is due to the 1918 flu epidemic: doi: 10.1111/j.1728-4457.2000.00565.x
+
+::: callout-note
+Look like people born in 1918 have a lower life expectancy, this study indicates this is due to the 1918 flu epidemic: doi: 10.1111/j.1728-4457.2000.00565.x. We can also see that the `time` axis goes to year 2100. This is because after 2017, the data includes life expectancy *estimates* rather than using real data. **Take a few minutes to re-name the `c` variable something more informative and create a new figure that plots the Canada data but omits the year 2017 and after.**
+:::
+
+```{r}
+ggplot(data = dplyr::filter(gm_lex_raw, name == 'Canada') %>% 
+         dplyr::filter(time <= 2016), 
+       aes(x = time, y = Life.expectancy)) +
+  geom_line() + 
+  ggtitle('Canada')
+```
