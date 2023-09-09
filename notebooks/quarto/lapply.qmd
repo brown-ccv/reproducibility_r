@@ -1,0 +1,140 @@
+---
+title: "lapply"
+format: html
+editor: visual
+---
+
+## lapply
+
+What if you want to run your function on a list of things? We can use `lapply`, which will apply a function (`FUN`) to a list (`X`). It will return a list of the same length as `X`, which is the result of applying `FUN` to the elements of `X`. The usage is: `lapply(X, FUN)`
+
+We can try an example with the life expectancy data. First, make a list of 3 countries:
+
+```{r}
+country_list <- c('Canada', 'United States','Mexico')
+```
+
+Then we can try running our plotting function on the list, specifying the other function argument `input_table`:
+
+```{r}
+plot_list <- lapply(country_list, plot_by_country, input_table = gm_lex_raw)
+```
+
+We could also set it up this way:
+
+```{r}
+plot_list_2 <- lapply(country_list, function(x) plot_by_country(input_table = gm_lex_raw, country = x))
+```
+
+Or if it is a function we only want to use once, we might want to set things up as an anonymous function:
+
+```{r}
+plot_list_3 <- lapply(country_list, function(z) {
+  ggplot(data = gm_lex_raw[gm_lex_raw$name %in% z,],
+         aes(x = time, y = Life.expectancy)) +
+    geom_line() +
+    ggtitle(z)
+})
+```
+
+## Using lapply() with power analysis
+
+Here's an example where we are trying to run a power analysis.
+
+The arguments for `pwr.anova.test` are as follows:
+
+`k = number of groups`
+
+`n = number of obervations (per group`)
+
+`f = effect size`
+
+`sig.level = Significance level (Type I error probability`
+
+`power = Power of test (1 minus Type II error probability`)
+
+You can also see the description and arguments for the `pwr.anova.test` function by typing `?pwr.anova.test` in the console.
+
+Let's say we have 5 groups and want a power of 80% with effect size of 0.25 and a significance level of 0.05.
+
+```{r}
+a <- pwr.anova.test(k=5,
+               f=.25,
+               sig.level=.05,
+               power=.8)
+a
+```
+
+What if we have a different number of participants?
+
+30 participants
+
+```{r}
+b <- pwr.anova.test(k=5,
+               n=30,
+               f=.25,
+               sig.level=.05)
+bpower <- b$power
+
+```
+
+35 participants
+
+```{r}
+d=pwr.anova.test(k=5,
+                 n=35,
+                 f=.25,
+                 sig.level=.05)
+dpower <- d$power
+```
+
+25 participants
+
+```{r}
+e=pwr.anova.test(k=5,
+                 n=25,
+                 f=.25,
+                 sig.level=.05)
+epower <- e$power
+```
+
+40 participants
+
+```{r}
+f=pwr.anova.test(k=5,
+                 n=40,
+                 f=.25,
+                 sig.level=.05)
+```
+
+Then we can make a few vectors of our results, including the `power` and `n` number of participants. Then we use those vectors to make a plot:
+
+```{r}
+power <- c(.8,bpower,dpower,epower,f$power)
+n <- c(a$n,30,35,25,f$n)
+plot(n, power, type="b")
+```
+
+Note that this plot looks pretty terrible -- we haven't sorted the number of participants, so R is trying to connect the data points in the order you've provided them. We are also repeating ourselves quite a bit.
+
+Here's another example of how to adjust the power -- what effect size can we detect at 80% power with 30 participants?
+
+```{r}
+c = pwr.anova.test(
+  k = 5,
+  n = 30,
+  sig.level = .05,
+  power = .8)
+c
+c$power
+```
+
+::: callout-note
+Now that you know how to write use `lapply()`, **write an `lapply()` function that will make a plot with sample size on the x-axis and the power for effect size 0.25 on the y-axis, with significance level .05 with 5 groups**.
+:::
+
+```{r}
+n <- 2:45
+power <- lapply(n, function(x) pwr.anova.test(k=5,n=x,f=.25,sig.level=.05)$power)
+plot(n,power,type="b")
+```
