@@ -1,0 +1,11 @@
+---
+title: "document"
+format: html
+editor: visual
+---
+
+    {{< include intro.qmd >}}
+
+    {{< include part_1.qmd >}}
+
+    {{< include functions.qmd >}}
