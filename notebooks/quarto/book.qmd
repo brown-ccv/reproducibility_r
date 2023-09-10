@@ -1,11 +1,17 @@
 ---
-title: "document"
+title: "Reproducibility in R"
 format: html
 editor: visual
 ---
 
     {{< include intro.qmd >}}
 
-    {{< include part_1.qmd >}}
+    {{< include filtering.qmd >}}
 
     {{< include functions.qmd >}}
+
+    {{< include lapply.qmd >}}
+
+    {{< include if_else.qmd >}}
+
+    {{< include pdf_parsing.qmd >}}
