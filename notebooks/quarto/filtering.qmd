@@ -6,10 +6,28 @@ editor: visual
 
 ## Filtering and plotting data
 
-When analyzing your data in a program like Excel, you might want to filter data to look at a particular category of interest. We can do this in R as well. Let's look at the Canada data:
+When analyzing your data in a program like Excel, you might want to filter data to look at a particular category of interest. We can do this in R as well. Let's look at the Canada data using the `filter` function from `dplyr`. I am using the `dplyr::filter` notation to specify that I want to use the `filter` from `dplyr` -- not some other package that also has a function called `filter`.
 
 ```{r}
-c <- dplyr::filter(gm_lex_raw, name == 'Canada')
+c1 <- dplyr::filter(gm_lex_raw, name == 'Canada')
+```
+
+We can also reference the `gm_lex_raw` object by its rows and columns using `[rows, columns]`
+
+```{r}
+#first two rows
+gm_lex_raw[1:2,]
+```
+
+```{r}
+#first two rows and first three columns:
+gm_lex_raw[1:2,1:3]
+```
+
+We can use this notation to filter the `gm_lex_raw` data, similarly to how we filtered using `dplyr`:
+
+```{r}
+c2 <- gm_lex_raw[gm_lex_raw$name %in% 'Canada',]
 ```
 
 Although it isn't an informative variable name and probably not the best choice, R will still let you name your variable `c`. There are some variable names that R disallows:
@@ -33,11 +51,65 @@ print(?Reserved)
 
 ```
 
-Let's make a quick plot of the Canada data, using the `ggtitle` argument to add a title indicating that it is data from Canada.
+We will make a few figures using `ggplot2`. The general syntax of a `ggplot` is as follows:
+
+    ggplot(data=<DATA>) +
+        <GEOM_FUNCTION>(mapping=aes(<MAPPINGS>)
+
+We can make an example plot:
 
 ```{r}
-can_plot <- ggplot(data = c, aes(x = time, y = Life.expectancy)) +
-   geom_line() + 
+data(mpg)
+ggplot(data=mpg) + 
+  geom_point(mapping=aes(x=displ,y=hwy))
+```
+
+We can also specify the `mapping = aes` inside the call to `ggplot` instead of the call to the `geom_function`, like this:
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=displ,y=hwy)) + 
+  geom_point()
+```
+
+The `ggplot()` function contains *global* mapping, while each geom has a local mapping.
+
+Global mapping of `displ` and `hwy` creates the x and y axes:
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=displ,y=hwy))
+```
+
+Mapping `color` to `class` for point geom while using global x and y mappings:
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=displ,y=hwy)) + 
+  geom_point(mapping=aes(color=class))
+```
+
+`geom_smooth` doesn't need any mapping arguments if using global mapping:
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=displ,y=hwy)) +
+    geom_point(mapping=aes(color=class))+
+    geom_smooth()
+```
+
+We can also make a second `geom_smooth` that will use the same x and y mapping, but will plot data coming from `no_2seaters` object:
+
+```{r}
+no_2seaters <- filter(mpg, class != "2seater")
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth() +
+  geom_smooth(data = no_2seaters)
+```
+
+We can also add titles to our figures. For example, let's make a quick plot of the Canada data, using the `ggtitle` argument to add a title indicating that it is data from Canada.
+
+```{r}
+can_plot <- ggplot(data = c1) +
+   geom_line(mapping = aes(x = time, y = Life.expectancy)) + 
   ggtitle('Canada')
 can_plot
 ```
@@ -45,13 +117,13 @@ can_plot
 Let's look at a table of the Canada data between 1900 and 1950 to see more information about the dip we see:
 
 ```{r}
-dplyr::filter(c, time >= 1915 & time < 1925)
+dplyr::filter(c1, time >= 1915 & time < 1925)
 ```
 
 in base R we could do something like this, where we select rows in `can_data` where the `time` column is between 1915 and 1925.
 
 ```{r}
-c[c$time %in% 1915:1925,]
+c1[c1$time %in% 1915:1925,]
 ```
 
 We could also use the `ggplotly` function in the `plotly` package to make an interactive plot to see which year has the dip:
