@@ -1,5 +1,5 @@
 ---
-title: "Intro"
+title: "Reproducibility in R"
 format: html
 editor: visual
 ---
@@ -10,40 +10,74 @@ We are going to use some of the data on https://www.gapminder.org for this works
 
 Their statement says: **`Our mission is to fight devastating ignorance with a fact-based worldview everyone can understand.`**
 
+We are going to work with a collection of data describing the life expectancy by year and country of birth -- https://www.gapminder.org/data/documentation/gd004/
+
 ## Load packages and import data
 
-```{r}
-library('dplyr')
-library('tidyr')
+```{r echo=T, results='hide', warnings=F, message=F}
 library('here')
+library('tidyr')
 library('ggplot2')
 library('plotly')
+library('quarto')
+library('dplyr')
+library('pwr')
+library('pdftools')
+library('stringr')
+
 ```
 
 We have already imposed some structure on the contents of this repository. The `data` folder has three sub-folders -- `raw`, `intermediate`, and `processed`. We can try to import the `raw` data as follows:
 
+Run `here` to figure out current path:
+
 ```{r}
-#| echo: true
-#| code-overflow: wrap
-#| tidy.opts: { width.cutoff: 60 }
-gm_lex_raw <- read.csv(
-  '~/reproducibility_r/data/raw/GM_lex_by_country.csv')
+here()
 ```
 
-This works because we are in a container and using relative paths. We can also use the here package to build up the path:
+Tell `here` the path to the current document:
 
 ```{r}
-here::here()
+i_am("notebooks/quarto/intro.qmd")
 ```
 
-We can add the rest of the path as strings:
+`here` will give us the top level of the project:
 
 ```{r}
-here::here("reproducibility_r", "data", "raw", "GM_lex_by_country.csv")
+here()
 ```
 
-Or as a string of the full path
+Which we can use to build the full path to the file:
 
 ```{r}
-here::here("reproducibility_r/data/raw/GM_lex_by_country.csv")
+gm_lex_raw <- read.csv(here('data/raw/GM_lex_by_country.csv'))
+```
+
+This still works even if we set `setwd()`
+
+```{r}
+setwd('/Users/jwalla12/repos/reproducibility_r/notebooks/quarto')
+getwd()
+here()
+```
+
+We can use the `head` function to look at the first few lines of the data we just imported:
+
+```{r}
+head(gm_lex_raw)
+```
+
+And we can use `$` to get or set column data:
+
+```{r}
+head(gm_lex_raw$Life.expectancy)
+gm_lex_raw$some_data <- 'new_column'
+head(gm_lex_raw)
+```
+
+We can remove a column by setting it to NULL
+
+```{r}
+gm_lex_raw$some_data <- NULL
+head(gm_lex_raw)
 ```

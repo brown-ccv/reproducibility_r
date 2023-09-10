@@ -1,0 +1,75 @@
+---
+title: "joins"
+format: html
+editor: visual
+---
+
+## Joins
+
+Another potential use case where R can make your analysis pipeline more reproducible is the situation where you have two tables of data that you want to join based on some common identifier -- perhaps using an Excel VLOOKUP function. You can also do these using mutating joins from `dplyr`.
+
+    inner_join(): includes only rows in both x and y.
+
+    left_join(): includes all rows in x.
+
+    right_join(): includes all rows in y.
+
+    full_join(): includes all rows in either x or y.
+
+Let's look at some examples using `band_members`, `band_instruments` and `band_instruments2`
+
+```{r}
+data("band_instruments")
+data("band_instruments2")
+data("band_members")
+
+head(band_instruments)
+head(band_instruments2)
+head(band_members)
+```
+
+Let's say we want to join `band_members` and `band_instruments`:
+
+```{r}
+inner_example <- inner_join(band_members, band_instruments)
+head(inner_example)
+```
+
+Note that R will tell you which variable it used for the join -- here it was able to detect that we had two columns called `name` and it automatically used that column for the join.
+
+If you want to use `band_instruments2` instead of `band_instruments`, you have to specify a character vector of variable names to join by. If we are joining `x` and `y`, `by = c("a", "b")` joins `x$a` to `y$a` and `x$b` to `y$b`. If variable names differ between `x` and `y`, use a named character vector like `by = c("x_a" = "y_a", "x_b" = "y_b")`. For example:
+
+```{r}
+inner_example2 <- inner_join(band_members, band_instruments2, by = c('name' = 'artist'))
+head(inner_example2)
+```
+
+If we swap the order of the arguments, we have to swap the order of the column specification and the `name` column is now `artist` in the output.
+
+```{r}
+inner_example3 <- inner_join(band_instruments2, band_members, by = c('artist' = 'name'))
+head(inner_example3)
+```
+
+We can also run an example `full_join`:
+
+```{r}
+full_example <- full_join(band_members, band_instruments)
+full_example
+```
+
+And `right_join` or `left_join`:
+
+```{r}
+right_example <- right_join(band_members, band_instruments)
+right_example
+```
+
+```{r}
+left_example <- left_join(band_members, band_instruments)
+left_example
+```
+
+::: callout-note
+Now that you know how to use mutating joins, make a new object that joins the life expectancy data (`gm_lex_raw`) and the US GP data (`gm_gdp_us_imported`).
+:::

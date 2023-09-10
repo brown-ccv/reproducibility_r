@@ -1,5 +1,5 @@
 ---
-title: "lapply"
+title: "Reproducibility in R"
 format: html
 editor: visual
 ---
@@ -37,7 +37,7 @@ plot_list_3 <- lapply(country_list, function(z) {
 })
 ```
 
-## Using lapply() with power analysis
+**using lapply() with power analysis**
 
 Here's an example where we are trying to run a power analysis.
 
@@ -130,7 +130,7 @@ c$power
 ```
 
 ::: callout-note
-Now that you know how to write use `lapply()`, **write an `lapply()` function that will make a plot with sample size on the x-axis and the power for effect size 0.25 on the y-axis, with significance level .05 with 5 groups**.
+Now that you know how to write functions and use `lapply()`, **write an `lapply()` statement that will make a plot with sample size between 2 and 45 on the x-axis and the power for effect size 0.25 on the y-axis. Use a significance level .05 with 5 groups.**
 :::
 
 ```{r}

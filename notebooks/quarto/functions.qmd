@@ -1,5 +1,5 @@
 ---
-title: "Functions"
+title: "Reproducibility in R"
 format: html
 editor: visual
 ---
@@ -12,7 +12,9 @@ Functions take the following basic format:
 
 ```{r}
 myfunction <- function(argument_name){
-  stuff <- "this is the body of the function(it contains statements that use `argument_name` to do things and make stuff)"
+  stuff <- "this is the body of the function
+  (it contains statements that use `argument_name`
+  to do things and make stuff)"
   return(stuff)}
 ```
 
@@ -66,17 +68,16 @@ environment(roll)
 ```
 
 ::: callout-note
-Now that you know how to write functions, \*\*write a function that will plot the life expectancy of any country (given as a function argument) and include the name of the country as the title (using `ggtitle`)\*\*
+Now that you know how to write functions, **write a function that will plot the life expectancy of any country and include the name of the country as the title (using `ggtitle`**).
 :::
 
 ```{r}
-
 plot_by_country <- function(input_table, country){
   country_data <- input_table[input_table$name %in% country,]
   country_plot <- ggplot(data = country_data, aes(x = time, y = Life.expectancy)) + 
     geom_line() + ggtitle(country)
   return(country_plot)}
-test <- plot_by_country(gm_lex_raw, 'Afghanistan')
+plot_by_country(gm_lex_raw, 'Afghanistan')
 
   
 plot_by_country2 <- function(input_table, country){
@@ -84,10 +85,5 @@ plot_by_country2 <- function(input_table, country){
   country_plot <- ggplot(data = country_data, aes(x = time, y = Life.expectancy)) + 
     geom_line() + ggtitle(country)
   return(country_plot)}
-test <- plot_by_country2(gm_lex_raw, 'Afghanistan')
-
+plot_by_country2(gm_lex_raw, 'Afghanistan')
 ```
-
-can_plot \<- ggplot(data = c, aes(x = time, y = Life.expectancy)) +
- geom_line()
-can_plot

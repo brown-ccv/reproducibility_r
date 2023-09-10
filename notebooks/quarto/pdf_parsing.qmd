@@ -33,3 +33,19 @@ Use `read.table` to convert into a dataframe, setting `row.names = NULL` will nu
 gm_gdp_us_imported <- read.table(text = gm_gdp_us_split_unlist, row.names = NULL)
 head(gm_gdp_us_imported)
 ```
+
+Our column names have gotten a little broken up -- let's try to fix them using `paste` , which will convert vectors to characters and then concatenate them.
+
+```{r}
+gm_gdp_us_imported$name_fixed <- paste(gm_gdp_us_imported$geo, gm_gdp_us_imported$name, sep = " ")
+```
+
+Then we can drop `geo` and `name`, rename the `row.names` column as `geo`, and drop the `row.names` column.
+
+```{r}
+gm_gdp_us_imported$name <- NULL
+gm_gdp_us_imported$geo <- NULL
+gm_gdp_us_imported$geo <- gm_gdp_us_imported$row.names
+gm_gdp_us_imported$row.names <- NULL
+
+```

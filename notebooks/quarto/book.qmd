@@ -15,3 +15,5 @@ editor: visual
     {{< include if_else.qmd >}}
 
     {{< include pdf_parsing.qmd >}}
+
+    {{< include joins.qmd >}}
