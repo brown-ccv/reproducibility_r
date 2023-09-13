@@ -20,9 +20,6 @@ library('plotly')
 library('quarto')
 library('dplyr')
 library('pwr')
-library('pdftools')
-library('stringr')
-library('patchwork')
 ```
 
 We have already imposed some structure on the contents of this repository. The `data` folder has three sub-folders -- `raw`, `intermediate`, and `processed`. We can try to import the `raw` data as follows:
@@ -54,7 +51,7 @@ gm_lex_raw <- read.csv(here('data/raw/GM_lex_by_country.csv'))
 This still works even if we set `setwd()`
 
 ```{r}
-setwd('/Users/jwalla12/repos/reproducibility_r/notebooks/quarto')
+setwd(here('metadata'))
 getwd()
 here()
 ```
@@ -483,7 +480,7 @@ ggplot(
   aes(x = time, y = Life.expectancy, color = data_source)
 ) +
   geom_line() +
-  ggtitle('Spain')s
+  ggtitle('Spain')
 ```
 
 ## Joins
@@ -550,12 +547,4 @@ right_example
 ```{r}
 left_example <- left_join(band_members, band_instruments)
 left_example
-```
-
-::: callout-note
-Now that you know how to use mutating joins, make a new object that joins the life expectancy data (`gm_lex_raw`) and the US GP data (`gm_gdp_us_imported`).
-:::
-
-```{r}
-gm_data_joined <- inner_join(gm_lex_raw, gm_gdp_us_imported, by = c('geo' = 'geo', 'name' = 'name_fixed', 'time' = 'time'))
 ```
