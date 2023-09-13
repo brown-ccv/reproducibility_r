@@ -1,19 +1,561 @@
 ---
 title: "Reproducibility in R"
-format: html
+format: 
+  html:
+    self-contained: true
 editor: visual
 ---
 
-    {{< include intro.qmd >}}
+## Gapminder Data
 
-    {{< include filtering.qmd >}}
+We are going to use some of the data on https://www.gapminder.org for this workshop. Their statement says: **`Our mission is to fight devastating ignorance with a fact-based worldview everyone can understand.`** We will use a collection of data describing the life expectancy by year and country of birth -- https://www.gapminder.org/data/documentation/gd004/
 
-    {{< include functions.qmd >}}
+## Load packages and import data
 
-    {{< include lapply.qmd >}}
+```{r echo=T, results='hide', warnings=F, message=F}
+library('here')
+library('tidyr')
+library('ggplot2')
+library('plotly')
+library('quarto')
+library('dplyr')
+library('pwr')
+library('pdftools')
+library('stringr')
+library('patchwork')
+```
 
-    {{< include if_else.qmd >}}
+We have already imposed some structure on the contents of this repository. The `data` folder has three sub-folders -- `raw`, `intermediate`, and `processed`. We can try to import the `raw` data as follows:
 
-    {{< include pdf_parsing.qmd >}}
+Run `here` to figure out current path:
 
-    {{< include joins.qmd >}}
+```{r}
+here()
+```
+
+Tell `here` the path to the current document:
+
+```{r}
+i_am("notebooks/quarto/book.qmd")
+```
+
+`here` will give us the top level of the project:
+
+```{r}
+here()
+```
+
+Which we can use to build the full path to the file:
+
+```{r}
+gm_lex_raw <- read.csv(here('data/raw/GM_lex_by_country.csv'))
+```
+
+This still works even if we set `setwd()`
+
+```{r}
+setwd('/Users/jwalla12/repos/reproducibility_r/notebooks/quarto')
+getwd()
+here()
+```
+
+We can use the `head` function to look at the first few lines of the data we just imported:
+
+```{r}
+head(gm_lex_raw)
+```
+
+And we can use `$` to get or set column data:
+
+```{r}
+head(gm_lex_raw$Life.expectancy)
+gm_lex_raw$some_data <- 'new_column'
+head(gm_lex_raw)
+```
+
+We can remove a column by setting it to NULL
+
+```{r}
+gm_lex_raw$some_data <- NULL
+head(gm_lex_raw)
+```
+
+## Filtering and plotting data
+
+When analyzing your data in a program like Excel, you might want to filter data to look at a particular category of interest. We can do this in R as well. Let's look at the Canada data using the `filter` function from `dplyr`. I am using the `dplyr::filter` notation to specify that I want to use the `filter` from `dplyr` -- not some other package that also has a function called `filter`.
+
+```{r}
+c1 <- dplyr::filter(gm_lex_raw, name == 'Canada')
+```
+
+We can also reference the `gm_lex_raw` object by its rows and columns using `[rows, columns]`
+
+```{r}
+#first two rows
+gm_lex_raw[1:2,]
+```
+
+```{r}
+#first two rows and first three columns:
+gm_lex_raw[1:2,1:3]
+```
+
+We can use this notation to filter the `gm_lex_raw` data, similarly to how we filtered using `dplyr`:
+
+```{r}
+c2 <- gm_lex_raw[gm_lex_raw$name %in% 'Canada',]
+```
+
+Although they aren't informative variable names and probably not the best choice, R will still let you name your variables `c1` and `c2`. There are some variable names that R disallows:
+
+```{r}
+print(?Reserved)
+
+# Reserved {base}	R Documentation
+# Reserved Words in R
+# Description
+# The reserved words in R's parser are
+# 
+# if else repeat while function for in next break
+# 
+# TRUE FALSE NULL Inf NaN NA NA_integer_ NA_real_ NA_complex_ NA_character_
+# 
+# ... and ..1, ..2 etc, which are used to refer to arguments passed down from a calling function, see ....
+# 
+# Details
+# Reserved words outside quotes are always parsed to be references to the objects linked to in the ‘Description’, and hence they are not allowed as syntactic names (see make.names). They are allowed as non-syntactic names, e.g. inside backtick quotes.
+
+```
+
+We will make a few figures using `ggplot2`. The general syntax of a `ggplot` is as follows:
+
+    ggplot(data=<DATA>) +
+        <GEOM_FUNCTION>(mapping=aes(<MAPPINGS>)
+
+We can make an example plot:
+
+```{r}
+data(mpg)
+ggplot(data=mpg) + 
+  geom_point(mapping=aes(x=displ,y=hwy))
+```
+
+We can also specify the `mapping = aes` inside the call to `ggplot` instead of the call to the `geom_function`, like this:
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=displ,y=hwy)) + 
+  geom_point()
+```
+
+**The `ggplot()` function contains *global* mapping, while each geom has a local mapping.**
+
+Global mapping of `displ` and `hwy` creates the x and y axes:
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=displ,y=hwy))
+```
+
+Mapping `color` to `class` for point geom while using global x and y mappings:
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=displ,y=hwy)) + 
+  geom_point(mapping=aes(color=class))
+```
+
+`geom_smooth` doesn't need any mapping arguments if using global mapping:
+
+```{r}
+ggplot(data=mpg, mapping=aes(x=displ,y=hwy)) +
+    geom_point(mapping=aes(color=class))+
+    geom_smooth()
+```
+
+We can also make a second `geom_smooth` that will use the same x and y mapping, but will plot data coming from `no_2seaters` object:
+
+```{r}
+no_2seaters <- filter(mpg, class != "2seater")
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth() +
+  geom_smooth(data = no_2seaters)
+```
+
+We can also add titles to our figures. For example, let's make a quick plot of the Canada data, using the `ggtitle` argument to add a title indicating that it is data from Canada.
+
+```{r}
+can_plot <- ggplot(data = c1) +
+   geom_line(mapping = aes(x = time, y = Life.expectancy)) + 
+  ggtitle('Canada')
+can_plot
+```
+
+We could also use `labs` to set some titles (see `?labs` for more details)
+
+```{r}
+ggplot(data = c1) +
+   geom_line(mapping = aes(x = time, y = Life.expectancy)) + 
+  labs(title = 'Canada', subtitle = 'this is a subtitle')
+
+```
+
+Let's look at a table of the Canada data between 1900 and 1950 to see more information about the dip we see:
+
+```{r}
+dplyr::filter(c1, time >= 1915 & time < 1925)
+```
+
+in base R we could do something like this, where we select rows in `can_data` where the `time` column is between 1915 and 1925.
+
+```{r}
+c1[c1$time %in% 1915:1925,]
+```
+
+We could also use the `ggplotly` function in the `plotly` package to make an interactive plot to see which year has the dip:
+
+```{r}
+ggplotly(can_plot)
+```
+
+Look like people born in 1918 have a lower life expectancy, this study indicates this is due to the 1918 flu epidemic: doi: 10.1111/j.1728-4457.2000.00565.x
+
+::: callout-note
+Looks like people born in 1918 have a lower life expectancy, this study indicates this is due to the 1918 flu epidemic: doi: 10.1111/j.1728-4457.2000.00565.x. We can also see that the time axis goes to year 2100. This is because after 2017, the data includes life expectancy estimates rather than using real data. **Take a few minutes to re-name the c1 and c2 variables something more informative and create a new figure that plots the Canada data but omits the year 2017 and after.**
+:::
+
+```{r}
+ggplot(data = dplyr::filter(gm_lex_raw, name == 'Canada') %>% 
+         dplyr::filter(time <= 2016), 
+       aes(x = time, y = Life.expectancy)) +
+  geom_line() + 
+  ggtitle('Canada')
+```
+
+## Functions
+
+One of the central tenets of reproducible analyses is the DRY principle -- Don't Repeat Yourself. If you find that you are repeating the same lines of code, it might be time to write a function.
+
+Functions take the following basic format:
+
+```{r}
+myfunction <- function(argument_name){
+  stuff <- "this is the body of the function
+  (it contains statements that use `argument_name`
+  to do things and make stuff)"
+  return(stuff)}
+```
+
+More formally, R functions are broken up into 3 pieces:
+
+**formals()**- the list of arguments
+
+**body()** - code inside the function
+
+**environment()** - how the function finds the values associated with function names
+
+Here's an example of a function called `roll()` that rolls any number of 6-sided dice:
+
+```{r}
+roll <- function(number_of_dice){
+    rolled_dice <- sample(
+        x = 6, 
+        size = number_of_dice, 
+        replace = TRUE)
+    return(rolled_dice)}
+```
+
+-   The built-in R function `sample()` is nested inside our `roll()` function.
+
+-   `roll()` uses the argument `number_of_dice` as the `size`, `x` is the number of sides on the die, which we have hard-coded as `6`, and `replace = TRUE` means that we are sampling the space of all potential die roll outcomes with replacement.
+
+-   Lastly, we tell the function what it should return (`rolled_dice`).
+
+To call that function and print the output:
+
+```{r}
+roll(number_of_dice = 10)
+```
+
+Lets look at the `formals()`
+
+```{r}
+formals(roll)
+```
+
+What about `body()`?
+
+```{r}
+body(roll)
+```
+
+What about `environment()`?
+
+```{r}
+environment(roll)
+```
+
+::: callout-note
+Now that you know how to write functions, **write a function that will plot the life expectancy of any country and include the name of the country as the title (using `ggtitle`**).
+:::
+
+```{r}
+plot_by_country <- function(input_table, country){
+  country_data <- input_table[input_table$name %in% country,]
+  country_plot <- ggplot(data = country_data, aes(x = time, y = Life.expectancy)) + 
+    geom_line() + ggtitle(country)
+  return(country_plot)}
+plot_by_country(gm_lex_raw, 'Afghanistan')
+
+  
+plot_by_country2 <- function(input_table, country){
+  country_data <- input_table %>% dplyr::filter(name == country) 
+  country_plot <- ggplot(data = country_data, aes(x = time, y = Life.expectancy)) + 
+    geom_line() + ggtitle(country)
+  return(country_plot)}
+plot_by_country2(gm_lex_raw, 'Afghanistan')
+```
+
+## lapply
+
+What if you want to run your function on a list of things? We can use `lapply`, which will apply a function (`FUN`) to a list (`X`). It will return a list of the same length as `X`, which is the result of applying `FUN` to the elements of `X`. The usage is: `lapply(X, FUN)`
+
+We can try an example with the life expectancy data. First, make a list of 3 countries:
+
+```{r}
+country_list <- c('Canada', 'United States','Mexico')
+```
+
+Then we can try running our plotting function on the list, specifying the other function argument `input_table`:
+
+```{r}
+plot_list <- lapply(country_list, plot_by_country, input_table = gm_lex_raw)
+```
+
+We could also set it up this way:
+
+```{r}
+plot_list_2 <- lapply(country_list, function(x) plot_by_country(input_table = gm_lex_raw, country = x))
+```
+
+Or if it is a function we only want to use once, we might want to set things up as an anonymous function:
+
+```{r}
+plot_list_3 <- lapply(country_list, function(z) {
+  ggplot(data = gm_lex_raw[gm_lex_raw$name %in% z,],
+         aes(x = time, y = Life.expectancy)) +
+    geom_line() +
+    ggtitle(z)
+})
+```
+
+**using lapply() with power analysis**
+
+Here's an example where we are trying to run a power analysis.
+
+The arguments for `pwr.anova.test` are as follows:
+
+`k = number of groups`
+
+`n = number of obervations (per group`)
+
+`f = effect size`
+
+`sig.level = Significance level (Type I error probability`
+
+`power = Power of test (1 minus Type II error probability`)
+
+You can also see the description and arguments for the `pwr.anova.test` function by typing `?pwr.anova.test` in the console.
+
+Let's say we have 5 groups and want a power of 80% with effect size of 0.25 and a significance level of 0.05.
+
+```{r}
+a <- pwr.anova.test(k=5,
+               f=.25,
+               sig.level=.05,
+               power=.8)
+a
+```
+
+What if we have a different number of participants?
+
+30 participants
+
+```{r}
+b <- pwr.anova.test(k=5,
+               n=30,
+               f=.25,
+               sig.level=.05)
+bpower <- b$power
+
+```
+
+35 participants
+
+```{r}
+d=pwr.anova.test(k=5,
+                 n=35,
+                 f=.25,
+                 sig.level=.05)
+dpower <- d$power
+```
+
+25 participants
+
+```{r}
+e=pwr.anova.test(k=5,
+                 n=25,
+                 f=.25,
+                 sig.level=.05)
+epower <- e$power
+```
+
+40 participants
+
+```{r}
+f=pwr.anova.test(k=5,
+                 n=40,
+                 f=.25,
+                 sig.level=.05)
+```
+
+Then we can make a few vectors of our results, including the `power` and `n` number of participants. Then we use those vectors to make a plot:
+
+```{r}
+power <- c(.8,bpower,dpower,epower,f$power)
+n <- c(a$n,30,35,25,f$n)
+plot(n, power, type="b")
+```
+
+Note that this plot looks pretty terrible -- we haven't sorted the number of participants, so R is trying to connect the data points in the order you've provided them. We are also repeating ourselves quite a bit.
+
+Here's another example of how to adjust the power -- what effect size can we detect at 80% power with 30 participants?
+
+```{r}
+c = pwr.anova.test(
+  k = 5,
+  n = 30,
+  sig.level = .05,
+  power = .8)
+c
+c$power
+```
+
+::: callout-note
+Now that you know how to write functions and use `lapply()`, **write an `lapply()` statement that will make a plot with sample size between 2 and 45 on the x-axis and the power for effect size 0.25 on the y-axis. Use a significance level .05 with 5 groups.**
+:::
+
+```{r}
+n <- 2:45
+power <- lapply(n, function(x) pwr.anova.test(k=5,n=x,f=.25,sig.level=.05)$power)
+plot(n,power,type="b")
+```
+
+## Control Flow
+
+Sometimes we may want to make some decisions about our analysis based on the data -- `if...else` statements are one way to achieve this. The general format of an `if..else` statement is:
+
+`returned_vector <- ifelse(test_expression, x, y)`
+
+We can try an example -- first generate a list of numbers, 0-10 and then write an `ifelse` statement that will divide each number by two and if there's no remainder, then print `even`, otherwise print `odd`.
+
+```{r}
+numbers <- 0:10
+ifelse(numbers %% 2 == 0,"even","odd")
+```
+
+We could also have it return the contents of `number` if there's a remainder:
+
+```{r}
+ifelse(numbers %% 2 == 0,"even",numbers)
+```
+
+::: callout-note
+Now that you know how to use `ifelse()`, **add a new column `gm_lex_raw` to indicate whether or not the data for a given row is a prediction or real data** (remember that starting with the year 2017, the data includes life expectancy estimates rather than actual data). **As a stretch goal, you can also create a new line plot showing the life expectancy for Spain, where the line is colored based on whether or not the data contains estimates or not.**
+:::
+
+```{r}
+gm_lex_raw$data_source <- ifelse(gm_lex_raw$time >= 2016, 'estimate', 'not_estimate')
+```
+
+```{r}
+ggplot(
+  data = gm_lex_raw %>% dplyr::filter(name == 'Spain'),
+  aes(x = time, y = Life.expectancy, color = data_source)
+) +
+  geom_line() +
+  ggtitle('Spain')s
+```
+
+## Joins
+
+Another potential use case where R can make your analysis pipeline more reproducible is the situation where you have two tables of data that you want to join based on some common identifier -- perhaps using an Excel VLOOKUP function. You can also do these using mutating joins from `dplyr`.
+
+    inner_join(): includes only rows in both x and y.
+
+    left_join(): includes all rows in x.
+
+    right_join(): includes all rows in y.
+
+    full_join(): includes all rows in either x or y.
+
+Let's look at some examples using `band_members`, `band_instruments` and `band_instruments2`
+
+```{r}
+data("band_instruments")
+data("band_instruments2")
+data("band_members")
+
+head(band_instruments)
+head(band_instruments2)
+head(band_members)
+```
+
+Let's say we want to join `band_members` and `band_instruments`:
+
+```{r}
+inner_example <- inner_join(band_members, band_instruments)
+head(inner_example)
+```
+
+Note that R will tell you which variable it used for the join -- here it was able to detect that we had two columns called `name` and it automatically used that column for the join.
+
+If you want to use `band_instruments2` instead of `band_instruments`, you have to specify a character vector of variable names to join by. If we are joining `x` and `y`, `by = c("a", "b")` joins `x$a` to `y$a` and `x$b` to `y$b`. If variable names differ between `x` and `y`, use a named character vector like `by = c("x_a" = "y_a", "x_b" = "y_b")`. For example:
+
+```{r}
+inner_example2 <- inner_join(band_members, band_instruments2, by = c('name' = 'artist'))
+head(inner_example2)
+```
+
+If we swap the order of the arguments, we have to swap the order of the column specification and the `name` column is now `artist` in the output.
+
+```{r}
+inner_example3 <- inner_join(band_instruments2, band_members, by = c('artist' = 'name'))
+head(inner_example3)
+```
+
+We can also run an example `full_join`:
+
+```{r}
+full_example <- full_join(band_members, band_instruments)
+full_example
+```
+
+And `right_join` or `left_join`:
+
+```{r}
+right_example <- right_join(band_members, band_instruments)
+right_example
+```
+
+```{r}
+left_example <- left_join(band_members, band_instruments)
+left_example
+```
+
+::: callout-note
+Now that you know how to use mutating joins, make a new object that joins the life expectancy data (`gm_lex_raw`) and the US GP data (`gm_gdp_us_imported`).
+:::
+
+```{r}
+gm_data_joined <- inner_join(gm_lex_raw, gm_gdp_us_imported, by = c('geo' = 'geo', 'name' = 'name_fixed', 'time' = 'time'))
+```
