@@ -33,9 +33,18 @@ export PASSWORD="mypasswordhere"
 ```
 This changes your directory to the workshops folder and sets some environmental parameters for Singularity. You should change the Password to something other than "mypasswordhere" (I like the xkcd password generator -- https://xkpasswd.net/s/). You might see some message about 'Apptainer', which is fine. Apptainer is just the Singularity installation on Oscar.
 
-Then run:
+Then while still in the `~/workshops` folder, run:
+
 ```
-singularity exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf /gpfs/data/shared/databases/workshops/reproducibility_r/metadata/reproducibility-r-202309012.sif /usr/lib/rstudio-server/bin/rserver --auth-none=0 --auth-pam-helper-path=pam-helper --server-user=$(whoami)
+cp /gpfs/data/shared/databases/workshops/reproducibility_r/metadata/reproducibility-r-202309012.sif .
+```
+
+If you type `ls`, you should see that you have a copy of `reproducibility-r-202309012.sif` in your `~/workshops` folder.
+
+We can run RStudio from the container like this:
+
+```
+singularity exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf reproducibility-r-202309012.sif /usr/lib/rstudio-server/bin/rserver --auth-none=0 --auth-pam-helper-path=pam-helper --server-user=$(whoami)
 ```
 This will start the container. The `--bind` commands tell singularity where to bind folders in the container -- for example, `singularity exec --bind /data:/mnt my_container.sif` will bind `/data` on the host to `/mnt` in the container. The ` --auth-none=0 --auth-pam-helper-path=pam-helper --server-user=$(whoami)` are lifted directly from the Rocker docs and let us authenticate when we connect to the RStudio container.
 
