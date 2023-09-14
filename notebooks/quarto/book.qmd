@@ -221,11 +221,7 @@ Looks like people born in 1918 have a lower life expectancy, this study indicate
 :::
 
 ```{r}
-ggplot(data = dplyr::filter(gm_lex_raw, name == 'Canada') %>% 
-         dplyr::filter(time <= 2016), 
-       aes(x = time, y = Life.expectancy)) +
-  geom_line() + 
-  ggtitle('Canada')
+
 ```
 
 ## Functions
@@ -292,24 +288,12 @@ environment(roll)
 ```
 
 ::: callout-note
-Now that you know how to write functions, **write a function that will plot the life expectancy of any country and include the name of the country as the title (using `ggtitle`**).
+Now that you know how to write functions, **write a function that will plot the life expectancy of any country and include the name of the country as the title (using `ggtitle`** or `labs`).
 :::
 
 ```{r}
-plot_by_country <- function(input_table, country){
-  country_data <- input_table[input_table$name %in% country,]
-  country_plot <- ggplot(data = country_data, aes(x = time, y = Life.expectancy)) + 
-    geom_line() + ggtitle(country)
-  return(country_plot)}
-plot_by_country(gm_lex_raw, 'Afghanistan')
 
-  
-plot_by_country2 <- function(input_table, country){
-  country_data <- input_table %>% dplyr::filter(name == country) 
-  country_plot <- ggplot(data = country_data, aes(x = time, y = Life.expectancy)) + 
-    geom_line() + ggtitle(country)
-  return(country_plot)}
-plot_by_country2(gm_lex_raw, 'Afghanistan')
+
 ```
 
 ## lapply
@@ -471,16 +455,8 @@ Now that you know how to use `ifelse()`, **add a new column `gm_lex_raw` to indi
 :::
 
 ```{r}
-gm_lex_raw$data_source <- ifelse(gm_lex_raw$time >= 2016, 'estimate', 'not_estimate')
-```
 
-```{r}
-ggplot(
-  data = gm_lex_raw %>% dplyr::filter(name == 'Spain'),
-  aes(x = time, y = Life.expectancy, color = data_source)
-) +
-  geom_line() +
-  ggtitle('Spain')
+
 ```
 
 ## Joins
