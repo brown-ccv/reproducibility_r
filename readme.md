@@ -12,7 +12,9 @@ To run it locally with Docker, you need to install Docker and then run:
 docker run --rm -p 8787:8787 -e USER=rstudio -e PASSWORD=yourpassword --volume ${PWD}:/home/rstudio compbiocore/reproducibility_r:202309012
 ```
 
-To run it on Oscar, connect to OOD and open up a terminal by going to the blue menu bar at the top of the screen and clicking on 'Clusters' and '>_OSCAR Shell Access'. Then run:
+To run it on Oscar, it is best to use Google Chrome. Then connect to OOD (ood.ccv.brown.edu) and spin up OOD desktop (under 'Default GUIs', then 4 Cores, 15GB Memory, 4 days and 'Launch'), 'Launch Desktop' once running. Then go to the to left corner and click 'Applicatons' and 'Terminal Emulator'.     
+
+Then run:
 
 ```
 cd ~
@@ -23,9 +25,7 @@ printf 'provider=sqlite\ndirectory=/var/lib/rstudio-server\n' > database.conf
 ```
 This will make a folder called `workshops` in you home directory. The rest of these commands come from the Rocker docs on how to use Singularity with Rocker images (https://rocker-project.org/use/singularity.html).   
 
-Best to use Google Chrome for this next bit --  spin up OOD desktop (under 'Default GUIs', then 4 Cores, 15GB Memory, 4 days and 'Launch'), 'Launch Desktop' once running. Then go to the to left corner and click 'Applicatons' and 'Terminal Emulator'.     
-
-Then:
+Then run:
 ```
 cd ~/workshops
 export SINGULARITY_BINDPATH="/gpfs/home/$USER,/gpfs/scratch/$USER"
