@@ -14,7 +14,8 @@ It should look like the two images below.
 
 ![Rstudio on Singularity OOD Setup](./images/rstudio_singularity_1.png)
 ![Rstudio on Singularity OOD Setup](./images/rstudio_singularity_2.png)
-4. Select Launch. The session will now be queued. You will be brought to your interactive sessions dashboard.
+
+4. Select Launch. The session will now be queued. You will be brought to your interactive sessions dashboard. 
 5. When the session is ready a **Connect to RStudio Server** button will appear (see image below). Click this button to launch your instance.
 
 ![Session is ready.](./images/my_interactive_session.png)
