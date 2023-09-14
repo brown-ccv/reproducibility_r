@@ -4,12 +4,12 @@
  
 We are using Docker images that use Rocker images as the base. To build the image on my laptop, I ran:
 ```
-docker buildx build --platform linux/amd64,linux/arm64 --push -t compbiocore/reproducibility_r:20230914-3-gcm .
+docker buildx build --platform linux/amd64,linux/arm64 --push -t compbiocore/reproducibility_r:202309012 .
 ```
 
 To run it locally with Docker, you need to install Docker and then run:
 ```
-docker run --rm -p 8787:8787 -e USER=rstudio -e PASSWORD=yourpassword --volume ${PWD}:/home/rstudio compbiocore/reproducibility_r:20230914-3-gcm
+docker run --rm -p 8787:8787 -e USER=rstudio -e PASSWORD=yourpassword --volume ${PWD}:/home/rstudio compbiocore/reproducibility_r:202309012
 ```
 
 To run it on Oscar, connect to OOD and open up a terminal by going to the blue menu bar at the top of the screen and clicking on 'Clusters' and '>_OSCAR Shell Access'. Then run:
@@ -35,7 +35,7 @@ This changes your directory to the workshops folder and sets some environmental 
 
 Then run:
 ```
-singularity exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf /gpfs/data/shared/databases/workshops/reproducibility_r/metadata/reproducibility-r-20230914-3-gcm.sif /usr/lib/rstudio-server/bin/rserver --auth-none=0 --auth-pam-helper-path=pam-helper --server-user=$(whoami)
+singularity exec --bind run:/run,var-lib-rstudio-server:/var/lib/rstudio-server,database.conf:/etc/rstudio/database.conf /gpfs/data/shared/databases/workshops/reproducibility_r/metadata/reproducibility-r-202309012.sif /usr/lib/rstudio-server/bin/rserver --auth-none=0 --auth-pam-helper-path=pam-helper --server-user=$(whoami)
 ```
 This will start the container. The `--bind` commands tell singularity where to bind folders in the container -- for example, `singularity exec --bind /data:/mnt my_container.sif` will bind `/data` on the host to `/mnt` in the container. The ` --auth-none=0 --auth-pam-helper-path=pam-helper --server-user=$(whoami)` are lifted directly from the Rocker docs and let us authenticate when we connect to the RStudio container.
 
