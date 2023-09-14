@@ -43,6 +43,6 @@ of the page select the `Generate` button.
 ![Generate token](./images/github_generate_token.png)
 5. Your token will appear at the top of the page. Leave this page open for you to copy and paste your token 
 during this workshop. If you accidentally close the tab you can navigate back to 
-`Developer settings`>`Personal access tokens`>`Tokens (classic)`, select your token and regenerate
+`Developer settings`>`Personal access tokens`>`Tokens (classic)`, select your token name and regenerate
 a new code to use. 
 ![Token](./images/github_token.png)
