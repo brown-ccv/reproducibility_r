@@ -1,3 +1,16 @@
+# Reproducible Research
+In this workshop we will be covering best practices for **Reproducible Research**. This workshop 
+will have two interactive components 1) How to PR Git session and 2) Coding best practices with R.
+We will be working within a containerized RStudio environment using Brown's HPC cluster, OSCAR. For 
+this workshop you will need both a GitHub and OSCAR account!
+
+[Link for OSCAR sign-up](https://brown.co1.qualtrics.com/jfe/form/SV_0GtBE8kWJpmeG4B)
+
+[Link for GitHub sign-up](https://github.com/)
+
+[Presentation Slides](https://docs.google.com/presentation/d/1n-tNWJCbu9Z4Jo1J4wJcVAjtIBnsXP65MQytkvud0KI/edit?usp=sharing)
+
+
 
 ## I. Launching RStudio on Singularity with OOD
 
@@ -21,7 +34,7 @@ It should look like the two images below.
 ![Session is ready.](./images/my_interactive_session.png)
 
 
-## Authenticating GitHub while using a containerized instance
+## II. Authenticating GitHub while using a containerized instance
 You will need to authenticate your GitHub credentials to make branches and push commits to the remote repository. 
 This is a bit tricky because you are working within a container instance, which does not have access to 
 more seamless authentication methods. 
