@@ -80,6 +80,12 @@ Mappings refer to the visual properties of objects in the plot, i.e. size, shape
 ggplot(data=mpg) + geom_point(mapping=aes(x=displ,y=hwy))
 ```
 
+We an also make interactive plots with the plotly package:
+
+```{r}
+plot1 <- ggplot(data=mpg) + geom_point(mapping=aes(x=displ,y=hwy))
+ggplotly(plot1)
+```
 ::: callout-note
 Run `?geom_point` in the console to see the documentation. What other `aes` arguments can we set? Make a plot that colors the points based on the `class` column from `mpg`.
 :::
@@ -212,7 +218,7 @@ Now that you know how to use `ifelse()`, add a column to the `mpg` data indicati
 
 ## Bookdown and Quarto
 Another way to make your analysis more reproducible is to couple the data analysis with the code used to make it. A single Rmarkdown file can do this, but it gets cumbersome as your analysis involves more and more steps. You can use Bookdown or Quarto to organize your analysis into chapters spread out across several notebook files. Quarto is newer and is particularly nice because it works with R and Python and has lots of output format options and templates https://quarto.org/, including templats that make it easier to submit papers to journals (https://quarto.org/docs/extensions/listing-journals.html).
-I did this workshop in bookdown (https://bookdown.org/), which is similar to Quarto but has less bells and whistles. You can still make very nice documents organized into chapters. There's a file in the same folder as this document called `_bookdown.yml` -- its an example of all you need to convert your files into bookdown, just provide a list of `rmd_files`. There's an output file saved in this repo (`~/workshop/reproducibility_r/notebooks/book/_book/reproducibility-in-r.html`) that you can check out. You should be able to render this notebook if you run `render_book('~/workshop/reproducibility_r/notebooks/book')`.
+I did this workshop in bookdown (https://bookdown.org/), which is similar to Quarto but has less bells and whistles. You can still make very nice documents organized into chapters. There's a file in the same folder as this document called `_bookdown.yml` -- its an example of all you need to convert your files into bookdown, just provide a list of `rmd_files`. There's an output file saved in this repo (`~/workshop/reproducibility_r/notebooks/book/_book/reproducibility-in-r.html`) that you can check out. You should be able to render this notebook if you run `bookdown::render_book('~/workshop/reproducibility_r/notebooks/book')`.
 
 If you have questions about anything we have talked about here, come to our office hours (https://events.brown.edu/ccv/). In addition to the general Oscar office hours, you are also welcome to come by the Computational Biology Core office hours. Even if you aren't a biologist, we can probably help you with your R code.
 
