@@ -2,7 +2,7 @@
 
 ## Introductio
 
-'''R''' is a [[programming language]] for [[statistical computing]] and graphics supported by the R Core Team and the R Foundation for Statistical Computing. Created by statisticians [[Ross Ihaka]] and [[Robert Gentleman (statistician)\|Robert Gentleman]], R is used among [[Data mining\|data miners]], [[Bioinformatics\|bioinformaticians]] and [[statistician]]s for [[data analysis]] and developing [[statistical software]]. The core R language is augmented by a large number of [[R package\|extension packages]] containing reusable code and documentation.
+**R** is a [[programming language]] for [[statistical computing]] and graphics supported by the R Core Team and the R Foundation for Statistical Computing. Created by statisticians [[Ross Ihaka]] and [[Robert Gentleman (statistician)\|Robert Gentleman]], R is used among [[Data mining\|data miners]], [[Bioinformatics\|bioinformaticians]] and [[statistician]]s for [[data analysis]] and developing [[statistical software]]. The core R language is augmented by a large number of [[R package\|extension packages]] containing reusable code and documentation.
 
 According to user surveys and studies of scholarly literature databases, R is one of the most commonly used programming languages in data mining.
 
