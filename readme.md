@@ -10,6 +10,7 @@ this workshop you will need both a GitHub and OSCAR account!
 
 [Presentation Slides](https://docs.google.com/presentation/d/1n-tNWJCbu9Z4Jo1J4wJcVAjtIBnsXP65MQytkvud0KI/edit?usp=sharing)
 
+[How-To-Pull-Request Slides](https://brownccv.notion.site/Collaboration-using-Git-GitHub-and-Pull-Requests-d3aabfd1aebd43caad302c2c26d45605)
 
 
 ## I. Launching RStudio on Singularity with OOD
