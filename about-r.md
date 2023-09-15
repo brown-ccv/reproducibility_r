@@ -6,7 +6,7 @@
 
 According to user surveys and studies of scholarly literature databases, R is one of the most commonly used programming languages in data mining.
 
-The official R software environment is an open-source [[free software]] environment released as part of the [[GNU Project]] and available under the [[GNU General Public License]]. It is written primarily in [[C (programming language)\|C]], [[Fortran]], and R itself (partially [[Self-hosting (compilers)\|self-hosting]]). Precompiled [[executable]]s are provided for various [[operating system]]s. R has a [[command line interface]].
+The official R software environment is an open-source [free software] environment released as part of the [GNU Project] and available under the [GNU General Public License]. It is written primarily in [C (programming language)\|C], [Fortran], and R itself (partially [Self-hosting (compilers)\|self-hosting]). Precompiled [executable]s are provided for various [operating system]s. R has a [command line interface].
 
 Multiple third-party [[graphical user interface]]s are also available, such as [[RStudio]], an [[integrated development environment]], and [[Jupyter]], a [[notebook interface]].
 
