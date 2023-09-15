@@ -1,0 +1,214 @@
+---
+title: "Reproducibility in R"
+format: 
+  html:
+    self-contained: true
+---
+# Reproducibility in R 
+## Load packages and import data
+
+```{r echo=T, results='hide', warnings=F, message=F}
+library('tidyr')
+library('ggplot2')
+library('plotly')
+library('quarto')
+library('dplyr')
+
+```
+
+We will work with the `mpg` data. This dataset contains a subset of the fuel economy data that the EPA makes available on https://fueleconomy.gov/. It contains only models which had a new release every year between 1999 and 2008. Let's load it here:
+
+```{r}
+data(mpg)
+head(mpg)
+```
+It has 11 columns:        
+
+`manufacturer`: manufacturer name         
+
+`model`: model name        
+
+`displ`: engine displacement, in litres        
+
+`year`: year of manufacture        
+
+`cyl`: number of cylinders        
+
+`trans`: type of transmission        
+
+`drv`: the type of drive train, where f = front-wheel drive, r = rear wheel drive, 4 = 4 wheel drive        
+
+`cty`: city miles per gallon        
+
+`hwy`: highway miles per gallon        
+
+`fl`: fuel type        
+
+`class`: type of car        
+
+## Filtering
+
+When analyzing your data in a program like Excel, you might want to filter data to look at a particular category of interest. We can do this in R as well. We can filter for cars manufactered by Honda like this:
+
+```{r}
+h1 <- mpg[mpg$manufacturer %in% 'honda',]
+```
+
+Or like this using dplyr:
+
+```{r}
+h2 <- dplyr::filter(mpg, manufacturer == 'honda')
+```
+
+I am using the `dplyr::filter` notation to specify that I want to use the `filter` from `dplyr` -- not some other package that also has a function called `filter`.
+
+R will let you name variables `h1` and `h2`, but these aren't very informative variable names and might make it harder for others to understand your code. The tidyverse style guide (https://style.tidyverse.org/syntax.html) suggests that variable names should be nouns and should have only lowercase letters, numbers, `_`. 
+
+::: callout-note
+You can use `!=` to invert the dplyr filtering and specify a group you want to exclude from the data. Make an object called `no2seaters` that omits the `2seaters` data from mpg.
+:::
+
+## ggplot
+
+You might also want to make some visualizations of your data. Doing this in R rather than something like Excel is more reproducible and its easier for you to remake figures and reuse code. We can use ggplot for this. All plots in ggplot follow the same syntax: `ggplot(data=<DATA>) + <GEOM_FUNCTION>(mapping=aes(<MAPPINGS>)`.
+
+Mappings refer to the visual properties of objects in the plot, i.e. size, shape, color. Can display points from other variables in different ways by changing value of aesthetic properties. 
+
+`geom` is geometrical object that the plot uses to represent data. Bar charts use bar geoms, line charts use line geoms, scatterplots use point geoms, etc. Full list of geoms provided with ggplot2 can be found in the docs: https://ggplot2.tidyverse.org/reference/#section-layer-geoms.
+
+```{r}
+ggplot(data=mpg) + geom_point(mapping=aes(x=displ,y=hwy))
+```
+
+::: callout-note
+Run `?geom_point` in the console to see the documentation. What other `aes` arguments can we set? Make a plot that colors the points based on the `class` column from `mpg`.
+:::
+
+## Functions
+
+One of the central tenets of reproducible analysis is Don't Repeat Yourself (DRY). If you find that you are repeating the same code over and over again, it is probably time to turn the code into a function.
+
+Functions take the following basic format:
+
+```{r}
+#myfunction <- function(argument_name){
+#  stuff <- this is the body of the function(
+#    it contains statements that use argument_names 
+#    to do things and make stuff) 
+#  return(stuff) 
+#  }
+```
+
+Here's an example of a function called `roll()` that rolls any number of 6-sided dice:
+
+```{r}
+roll <- function(number_of_dice){
+    rolled_dice <- sample(
+        x = 6, 
+        size = number_of_dice, 
+        replace = TRUE)
+    return(rolled_dice)
+}
+```
+
+-   The built-in R function sample() is nested inside our roll() function.        
+
+-   `roll()` uses the argument `number_of_dice` as the size, `x` is the number of sides on the die, which we have hard-coded as 6, and `replace = TRUE` means that we are sampling the space of all potential die roll outcomes with replacement.          
+
+-   Lastly, we tell the function what it should return (rolled_dice).          
+
+To call that function and print the output:
+
+```{r}
+roll(number_of_dice = 10)
+```
+
+The tidyverse style guide (https://style.tidyverse.org/syntax.html) suggests that function names should be verbs.
+
+::: callout-note
+Write a function that will filter the `mpg` data to select a particular elements of `class` ("compact","midsize", "suv","2seater","minivan", "pickup", or "subcompact") and report back the mean `hwy` miles per gallon.
+:::
+
+## apply functions
+
+R has a series of apply functions so that function sort of like loops -- they let you perform repetitive actions on collections of data. There's lots of different flavors of apply functions -- we are just going to talk about `apply`, `lapply` and `sapply`.
+
+`apply` works with data frames and matrices. It will accept three arguments:
+
+`X`: which is the matrix or data frame
+
+`MARGIN`: which indicates how the function should be applied `1` indicates rows, `2` indicates columns, `c(1,2)` indicates rows and columns.
+
+`FUN`: the function to apply.
+
+For example, we can use it to calculate the mean values for the `cty` and `hwy` columns of mpg:
+
+```{r}
+apply(X = mpg[,8:9], MARGIN = 2, FUN = mean)
+```
+
+`lapply` works with lists. It accepts two arguments:
+
+`X`: which is a list of elements you want to run the function on
+
+`FUN`: which is the function. It returns a list of the same length as `X`, each element of which is the result of applying `FUN` to the corresponding element of `X`.
+
+For example, we can apply `roll` to a list that represents groups of dice
+
+```{r}
+lapply(c(2,3,4), roll)
+```
+
+If its a function you only want to use once, you could write an anonymous function:
+```{r}
+lapply(c(2,3,4), function(n) sample(x = 6, size = n, replace = T))
+```
+
+`sapply` is similar to `lapply` and takes the same arguments, but it will return a vector or matrix by default. For example:
+
+```{r}
+sapply(c(3,3,3), roll)
+```
+
+```{r}
+lapply(c(3,3,3), roll)
+```
+
+Sometimes it can't return a matrix:
+
+```{r}
+sapply(c(2,3,4), roll)
+```
+
+::: callout-note
+In the previous exercise, you wrote a function to calculate the mean `hwy` miles per gallon for a particular class of car. Write an `lapply` statement and an `sapply` to run that function on all of the unique values of `class`.
+:::
+
+## ifelse
+
+The `ifelse` function is a shorthand function to the traditional if...else statement used in other programming languages. It takes a vector as an input and outputs a resultant vector. The general syntax for the ifelse statement is as follows:
+
+#returned_vector <- ifelse(test_expression, x, y)
+
+`returned_vector` has element from `x` if the corresponding value of `test_expression` is `TRUE`. If the expression is `FALSE`, it'll have an element from `y`.
+
+For example, we can create a list of numbers and use an `ifelse` statement to figure out if they are even or not:
+
+```{r}
+numbers <- 1:10
+ifelse(numbers %% 2 == 0,"even","odd")
+```
+If there's no remainder, it's even. If there is a remainder, it is odd.
+
+We could also indicate that if the numbers are odd then we should just return their original value:
+
+```{r}
+ifelse(numbers %% 2 == 0,"even",numbers)
+```
+
+::: callout-note
+Now that you know how to use `ifelse()`, add a column to the `mpg` data indicating whether or not they get 30 or greater `hwy`.
+:::
+
+If you have questions about anything we have talked about here, come to our office hours (https://events.brown.edu/ccv/). In addition to the general Oscar office hours, you are also welcome to come by the Computational Biology Core office hours. Even if you aren't a biologist, we can probably help you with your R code.
+
