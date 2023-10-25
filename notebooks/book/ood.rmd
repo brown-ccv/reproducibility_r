@@ -1,0 +1,40 @@
+---
+title: "Reproducibility in R"
+format: 
+  html:
+    self-contained: true
+author: Joselynn Wallace & George Dang
+---
+# Launching RStudio on Singularity with OOD
+
+1. Go to [ood.ccv.brown.edu](ood.ccv.brown.edu) and log in with your credentials.
+2. On the landing page select the **RStudio on Singularity** app. 
+
+```{r, echo=FALSE, out.width = "700px"}
+knitr::include_graphics(here::here('images/ood_apps_rstudio-sing_highlight.png'))
+```
+
+3. Fill in the following fields and leave the other fields empty
+   - Number of Hours: 48
+   - Num Cores: 4
+   - Memory: 16
+   - Singularity Container Path: `/gpfs/data/shared/databases/workshops/reproducibility_r/reproducibility_r.sif`
+   - Path for R Executable: `~/bin/R`
+  
+It should look like the two images below.
+```{r, echo=FALSE, out.width = "700px"}
+knitr::include_graphics(here::here('images/rstudio_singularity_1.png'))
+```
+```{r, echo=FALSE, out.width = "700px"}
+knitr::include_graphics(here::here('images/rstudio_singularity_2.png'))
+```
+
+If it seems like it is taking too long, you can change `Number of Hours` to `1` for the purposes of following along with this workshop.      
+
+4. Select Launch. The session will now be queued. You will be brought to your interactive sessions dashboard. 
+
+5. When the session is ready a **Connect to RStudio Server** button will appear (see image below). Click this button to launch your instance.
+
+```{r, echo=FALSE, out.width = "700px"}
+knitr::include_graphics(here::here('images/my_interactive_session.png'))
+```

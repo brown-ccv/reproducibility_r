@@ -1,0 +1,9 @@
+---
+title: "Reproducibility in R"
+format: 
+  html:
+    self-contained: true
+author: Joselynn Wallace & George Dang
+---
+
+# assertr

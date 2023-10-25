@@ -3,4 +3,4 @@ self_contained: true
 language:
   ui:
     chapter_name: "Chapter "
-rmd_files: ["book.rmd"]
+rmd_files: ["introduction.rmd", "containers.rmd", "bookdown_quarto.rmd", "ood.rmd"]

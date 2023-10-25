@@ -1,0 +1,14 @@
+---
+title: "Reproducibility in R"
+format: 
+  html:
+    self-contained: true
+author: Joselynn Wallace & George Dang
+---
+
+# Bookdown and Quarto
+Another way to make your analysis more reproducible is to couple the data analysis with the code used to make it. A single RMarkdown (https://rmarkdown.rstudio.com/) file can do this, but it gets cumbersome as your analysis involves more and more steps.      
+
+You can use Bookdown (https://bookdown.org/) or Quarto (https://quarto.org/) to organize your analysis into chapters spread out across several notebook files. Quarto is new and is particularly nice because it works with R, Python, Julia, and Observable. It also has lots of output format options  (https://quarto.org/docs/output-formats/all-formats.html) and templates including templates that make it easier to submit papers to journals (https://quarto.org/docs/extensions/listing-journals.html).       
+
+I did this workshop in bookdown , which is similar to Quarto but has less bells and whistles. You can still make very nice documents organized into chapters. There's a file in the same folder as this document called `_bookdown.yml` -- its an example of all you need to convert your files into bookdown, just provide a list of `rmd_files`. There's an output file saved in this repo (`here::here(bookdown::render_book('notebooks/book/_book/introduction.html'))`) that you can check out. You should be able to render this notebook if you run `here::here(bookdown::render_book('notebooks/book'))`.

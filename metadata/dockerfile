@@ -11,5 +11,11 @@ RUN apt-get update && \
         gdebi-core \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN R -e "install.packages(c('tidyverse', 'rmarkdown', 'knitr', 'quarto', 'bookdown','here', 'pdftools', 'tesseract', 'patchwork', 'plotly','pwr','openxlsx','stringr'), dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages(c('tidyverse', 'rmarkdown', 'knitr', 'quarto', 'bookdown', \
+                             'here', 'pdftools', 'tesseract', 'patchwork', 'plotly', \
+                             'pwr', 'openxlsx', 'stringr', 'assertr', 'writexl', \
+                             'credentials'), \
+                             dependencies=TRUE, repos='http://cran.rstudio.com/')"
+
+RUN ln -s /usr/lib/rstudio-server/bin/rsession /usr/local/bin/rsession
 
