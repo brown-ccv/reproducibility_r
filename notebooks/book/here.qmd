@@ -1,0 +1,39 @@
+---
+title: "Dealing with file paths using `here`"
+format: 
+  html:
+    self-contained: true
+author: Joselynn Wallace & George Dang
+---
+
+# Here
+
+When looking at someone elses R code, you might see scripts or notebooks with lines with hard-coded paths, like this:
+
+```{r, eval=F, echo=T}
+data <- read.table('/Users/Joselynn/Desktop/raw_data.txt')
+```
+
+Or maybe start like this:
+```{r, eval=F, echo=T}
+setwd('/Users/Joselynn/Desktop')
+```
+
+These approaches aren't *wrong*, they are a bit fragile and could break when your colleagues try to run your code on their computers. One way to avoid this is to use RStudio projects and the `here` package. RStudio projects are nice because they let you keep separate working environments for different projects and do lots of other very nice things for you (https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects). You can make new RStudio projects through the RStudio app or with the `usethis` package (https://usethis.r-lib.org/reference/index.html). I've already set this repository up as an RStudio project. You can open the project by going up to `File > Open Project` and opening the `reproducibility_r.Rproj` in the base of this repo. Now you can use `here` to refer to paths:
+
+```{r}
+here::here()
+```
+
+And you can build up full paths like this:
+
+```{r}
+list.files(here::here('notebooks/book/_book'))
+```
+
+You can `setwd` to change the working directory and `here::here` should still work:
+```{r}
+setwd('~')
+getwd()
+here::here()
+```

@@ -1,0 +1,39 @@
+---
+title: "Data verification with `assertr`"
+format: 
+  html:
+    self-contained: true
+author: Joselynn Wallace & George Dang
+---
+
+# assertr
+Another package that could help with making your data analysis more reproducible is `assertr` (https://cran.r-project.org/web/packages/assertr/assertr.pdf). It is basically a suite of functions to check that your data meets some of your assumptions before you proceed with your analysis. 
+
+```{r}
+library(magrittr)
+library(assertr)
+```
+
+Let's work with the mtcars data. The mpg column is an example of data that shouldn't have any negative values:
+```{r}
+head(mtcars)
+mtcars %>%
+  dplyr::group_by(cyl) %>%
+  dplyr::summarise(avg.mpg=mean(mpg))
+```
+
+What if this wasn't true? We can mess with the data a little to see what happens..
+
+```{r}
+mtcars$mpg[5] 
+mtcars$mpg[5] <- mtcars$mpg[5] * -1
+```
+
+Then we can use `assertr::verify` to add a step where we confirm that we don't have any negative values first, and if we do `assertr` will stop the process
+```{r}
+mtcars %>%
+  assertr::verify(mpg >= 0) %>%
+  dplyr::group_by(cyl) %>%
+  dplyr::summarise(avg.mpg=mean(mpg))
+```
+
