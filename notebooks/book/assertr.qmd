@@ -29,8 +29,8 @@ mtcars$mpg[5]
 mtcars$mpg[5] <- mtcars$mpg[5] * -1
 ```
 
-Then we can use `assertr::verify` to add a step where we confirm that we don't have any negative values first, and if we do `assertr` will stop the process
-```{r}
+Then we can use `assertr::verify` to add a step where we confirm that we don't have any negative values first, and if we do `assertr` will stop the process.
+```{r, echo=TRUE, eval=FALSE}
 mtcars %>%
   assertr::verify(mpg >= 0) %>%
   dplyr::group_by(cyl) %>%
