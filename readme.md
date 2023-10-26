@@ -7,7 +7,9 @@ If you want to try to use the container I used to make this workshop, you can do
 1. Go to [ood.ccv.brown.edu](ood.ccv.brown.edu) and log in with your credentials.
 2. On the landing page select the **RStudio on Singularity** app. 
 
-![Landing Page](.notebooks/images/mages/ood_apps_rstudio-sing_highlight.png)
+
+
+![Landing Page](./notebooks/images/mages/ood_apps_rstudio-sing_highlight.png)
 
 3. Fill in the following fields and leave the other fields empty
    - Number of Hours: 48
@@ -18,9 +20,9 @@ If you want to try to use the container I used to make this workshop, you can do
   
 It should look like the two images below.
 
-![OOD Setup 1](.notebooks/images/mages/rstudio_singularity_1.png)
+![OOD Setup 1](./notebooks/images/mages/rstudio_singularity_1.png)
 
-![OOD Setup 2](.notebooks/images/mages/rstudio_singularity_2.png)
+![OOD Setup 2](./notebooks/images/mages/rstudio_singularity_2.png)
 
 If it seems like it is taking too long, you can change `Number of Hours` to `1` for the purposes of following along with this workshop.      
 
@@ -28,4 +30,4 @@ If it seems like it is taking too long, you can change `Number of Hours` to `1` 
 
 5. When the session is ready a **Connect to RStudio Server** button will appear (see image below). Click this button to launch your instance.
 
-![Ready](.notebooks/images/mages/my_interactive_session.png)
+![Ready](./notebooks/images/mages/my_interactive_session.png)
