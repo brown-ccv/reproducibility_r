@@ -1,0 +1,19 @@
+project:
+  output-dir: _book
+  type: book
+
+book:
+  title: "Reproducible Analyses in R"
+  chapters:
+    - index.qmd
+    - containers.qmd
+    - bookdown_quarto.qmd
+    - ood.qmd
+    - here.qmd
+    - assertr.qmd
+
+toc: true
+number-sections: true
+format:
+  html:
+    embed-resources: true

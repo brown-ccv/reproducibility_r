@@ -1,0 +1,28 @@
+---
+title: "Containers"
+format: 
+  html:
+    self-contained: true
+author: Joselynn Wallace & George Dang
+---
+
+# Docker containers
+I think the two changes that have the biggest impact on the reproducibility of my analysis is integrating version control (Git and GitHub) and containerization into my workflow. Others at CCV have given a workshop about Git at the 2023 Research Computing Bootcamp ('Version Control with Git': https://docs.ccv.brown.edu/bootcamp-2023/schuedule/wednesday-5-may). I won't get into version control (other than to say that you should absolutely be using it) but will talk a tiny bit about how I use containers.      
+
+Containers are sometimes described as "A light-weight virtual machine", but for me they are just a very nice way to bundle up all of the software and packages I used to perform some analysis. I mostly use Docker containers, but they require root/admin privileges. In cases where I can't get those privileges (like on Oscar, the Brown HPC), I run my Docker images as Singularity containers. What am I even saying?       
+
+A bit of an overview: You build a **Docker image** from a **Dockerfile**. You can push the **Docker image** to DockerHub (or GitHub container registry) and track changes to the **Dockerfile** using GitHub. When you spin up a running version of that image, this is a **Docker container**. Once your **Docker image** is on DockerHub, a collaborator ran run that container as an image on their local machine and use all the same packages that you did. If you want to make changes to the software available in the container, you make changes to the **Dockerfile**, re-build the **Docker image**, and run the updated **Docker container**. If you want to spin up an instance of the container on Oscar or some other computer where you don't have root privileges, you are in luck because you can pull and run the **Docker image** as a **Singularity container**. Fabulous.    
+
+```{r, echo=FALSE, out.width = "700px"}
+knitr::include_graphics(here::here('notebooks/images/workflow_docker.png'))
+```
+
+I am a genomics data scientist, so the 'raw' data I am usually working with are reads from a sequencer. If all my raw sequencing data is uploaded to SRA or GEO or some similar platform, all my notebooks and scripts are on GitHub, and all of my Docker images are on Dockerhub, anyone else who wants to reproduce my analysis has all the data, code, and the computing environment necessary to reproduce what I've done. This helps me sleep soundly at night.       
+
+99% of the time, I am using a Dockerfile that is based off of the images provided by The Rocker Project (https://rocker-project.org/images/). These are Docker containers designed specifically to be used with R and they are **wonderful**. Here's an example of what a dockerfile looks like:
+
+```{r, echo=FALSE, out.width = "700px"}
+knitr::include_graphics(here::here('notebooks/images/dockerfile_screenshot.png'))
+```
+
+The first line specifies that we want to use the Docker image from the `rocker` organization, and that we want `rstudio` tagged with R version `4.3.1`. The next few lines are installing some system level libraries (you might not need to add any system level libraries depending on what you're doing). The last line is installing a few R packages from CRAN.
